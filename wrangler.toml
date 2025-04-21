@@ -11,6 +11,6 @@ workers_dev = true
 mode = "smart"
 
 [[d1_databases]]
-binding = "view-counter-d1" # i.e. available in your Worker on env.DB
-database_id = "770fb90c-6f9c-4e97-9422-afb02d62a4e6" 
-database_name = "view-counter-d1"
+binding = "ViewCounter" # i.e. available in your Worker on env.DB
+database_id = "f7989e0a-3836-4d71-8d3a-404e8776e9f8" 
+database_name = "view-counter"
