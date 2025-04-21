@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "view-counter-badge",
+  "version": "1.0.0",
+  "description": "Count how many visitors any page gets. A simple solution to add a view counter badge to your readme files or web page.",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "format": "prettier --check *.{json,js} src/**/*.{js,ts}"
+  },
+  "contributors": [
+    "Aveek Saha <aveek.s98@gmail.com>",
+    "陳鈞 <jim60105@gmail.com>"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231010.0",
+    "prettier": "^1.18.2",
+    "typescript": "^5.2.2",
+    "wrangler": "^3.13.1"
+  },
+  "dependencies": {
+    "badgen": "^3.2.2"
+  }
+}
