@@ -21,6 +21,7 @@ export default {
 	async fetch(request: WorkerRequest, env: Env): Promise<Response> {
 		const { searchParams } = new URL(request.url);
 		const referer = request.headers.get('referer');
+		const from = searchParams.get('from');
 		let id = searchParams.get('r') || '/';
 		if (referer && id === '/') {
 			// Extract the path from the referer URL
@@ -30,7 +31,7 @@ export default {
 
 		// Step the count
 		let count: number | null = await getCountFromD1(env, id);
-		count = await stepCount(id, count, env);
+		count = await stepCount(id, count, from, env);
 		console.log('Count', count);
 
 		// Get the query parameters
@@ -68,24 +69,26 @@ const getCountFromD1 = async (env: Env, id: string): Promise<number | null> =>
  * Increments the count and updates the ViewCounter.
  * @param id The ID of the view counter.
  * @param count The current count.
+ * @param from The source of the request.
  * @param env The environment variables.
  * @returns The new count.
  */
-const stepCount = async (id: string, count: number | null, env: Env): Promise<number> => {
+const stepCount = async (id: string, count: number | null, from: string | null, env: Env): Promise<number> => {
 	// If the value is null, insert a new record
+	const from_feed_count = from === 'feed' ? 1 : 0;
 	if (!count) {
 		const result = await env.ViewCounter.prepare(
-			'INSERT INTO view_counter (id, view_count) VALUES (?, ?)'
+			'INSERT INTO view_counter (id, view_count, from_feed_count) VALUES (?, ?, ?)'
 		)
-			.bind(id, 1)
+			.bind(id, 1, from_feed_count)
 			.run();
 		console.log('Insert result', result);
 	} else {
 		// Step the count in the database
 		const result = await env.ViewCounter.prepare(
-			'UPDATE view_counter SET view_count = view_count + 1 WHERE id = ?'
+			'UPDATE view_counter SET view_count = view_count + 1, from_feed_count = from_feed_count + ? WHERE id = ?'
 		)
-			.bind(id)
+			.bind(from_feed_count, id)
 			.run();
 		console.log('Update result', result);
 	}
